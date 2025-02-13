@@ -1,7 +1,7 @@
 import os
-import sys
+import enum
 from sqlalchemy.orm import relationship, declarative_base, Mapped, mapped_column
-from sqlalchemy import create_engine, ForeignKey, String, Column, Table
+from sqlalchemy import create_engine, ForeignKey, String, Column, Table, Enum
 from eralchemy2 import render_er
 
 Base = declarative_base()
@@ -39,11 +39,16 @@ class Comment(Base):
     users: Mapped["Users"] = relationship(back_populates="comment")
     post_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
     post: Mapped["Post"] = relationship(back_populates="comment")
-    
+
+class MyEnum(enum.Enum):
+    image = ".img"
+    video = ".mp4"
+
 class Media(Base):
     __tablename__ = 'media'
     id: Mapped[int] = mapped_column(primary_key=True)
-
+    type: Mapped[MyEnum] = mapped_column(nullable=False)
+    url: Mapped[str] = mapped_column(nullable=False)
     post_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
     post: Mapped["Post"] = relationship(back_populates="media")
 
